@@ -1,15 +1,25 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk17'
+    }
+
     environment {
         IMAGE_NAME = "ms-java-common"
-        IMAGE_TAG = "local"
+        IMAGE_TAG = "${BUILD_NUMBER}"
         VAULT_ADDR = "http://192.168.80.140:8200"
         VAULT_TOKEN = credentials('vault-token')
     }
 
     stages {
-        
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ravinderrana7173/ms-java-common.git'
+            }
+        }
+
         stage('Maven Build') {
             steps {
                 sh 'mvn clean package -DskipTests'
@@ -20,7 +30,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    eval \$(minikube docker-env) || true
+                    eval \$(minikube docker-env)
+
                     docker build \
                     --build-arg VAULT_ADDR=${VAULT_ADDR} \
                     --build-arg VAULT_TOKEN=${VAULT_TOKEN} \
@@ -36,10 +47,10 @@ pipeline {
                 sh """
                 kubectl create namespace dev || true
 
+                kubectl apply -f Infra/kubernetes/ms-java-common-deployment.yml
+
                 kubectl set image deployment/ms-java-common \
                 ms-java-common=${IMAGE_NAME}:${IMAGE_TAG} -n dev
-
-                kubectl apply -f Infra/kubernetes/ms-java-common-deployment.yml
                 """
             }
         }
