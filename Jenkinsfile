@@ -9,13 +9,7 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/ravinderrana7173/ms-java-common.git'
-            }
-        }
-
+        
         stage('Maven Build') {
             steps {
                 sh 'mvn clean package -DskipTests'
