@@ -50,7 +50,8 @@ spec:
     spec:
       containers:
       - name: ms-java-common
-        image: IMAGE_URL_WITH_TAG
+        image: ms-java-common:local
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             cpu: 50m
