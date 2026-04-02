@@ -4,7 +4,7 @@ metadata:
  labels:
    app: ms-java-common
    component: filebeat
- namespace: NameSpace
+ namespace: dev
  name: filebeat-sidecar-ms-java-common
 data:
   filebeat.yml: |
@@ -30,7 +30,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ms-java-common
-  namespace: NameSpace
+  namespace: dev
   labels:
     app: ms-java-common
 spec:
@@ -99,7 +99,7 @@ spec:
     kind: Service
     metadata:
       name: ms-java-common-service
-      namespace: NameSpace
+      namespace: dev
       labels:
         app: ms-java-common
     spec:
