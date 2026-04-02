@@ -1,0 +1,10 @@
+[template]
+src = "application.properties.tmpl"
+dest = "/build/common-rest/src/main/resources/application.properties"
+keys = [
+    "/ENVIRONMENT/common",
+     "/ENVIRONMENT/api-manager-url",
+    "/ENVIRONMENT/database"
+]
+owner = "jenkins"
+mode = "0644"

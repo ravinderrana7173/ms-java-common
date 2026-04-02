@@ -1,0 +1,10 @@
+[template]
+src = "key.tmpl"
+dest = "/build/cert/key.pem"
+keys = [
+    "/ENVIRONMENT/common",
+    "/ENVIRONMENT/camunda"
+]
+owner = "jenkins"
+mode = "0644"
+

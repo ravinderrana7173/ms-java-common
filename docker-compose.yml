@@ -1,0 +1,15 @@
+version: '2.1'
+services:
+  common-rest-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ms-java-common
+    ports:
+     - "8100:8100"
+    volumes:
+     - /var/log/docker-logs/common-rest-api:/var/log/volume
+networks:
+  default:
+    external:
+      name: p7-docker-network
