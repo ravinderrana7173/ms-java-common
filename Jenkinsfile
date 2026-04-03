@@ -8,8 +8,6 @@ pipeline {
     environment {
         IMAGE_NAME = "ms-java-common"
         IMAGE_TAG = "${BUILD_NUMBER}"
-        VAULT_ADDR = "http://192.168.80.140:8200"
-        VAULT_TOKEN = credentials('vault-token')
     }
 
     stages {
@@ -33,8 +31,6 @@ pipeline {
                     eval \$(minikube docker-env)
 
                     docker build \
-                    --build-arg VAULT_ADDR=${VAULT_ADDR} \
-                    --build-arg VAULT_TOKEN=${VAULT_TOKEN} \
                     -t ${IMAGE_NAME}:${IMAGE_TAG} \
                     -f Infra/docker/Dockerfile .
                     """
