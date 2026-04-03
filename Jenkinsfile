@@ -27,6 +27,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
+                withCredentials([string(credentialsId: 'vault-token', variable: 'VAULT_TOKEN')])
                 script {
                     sh """
                     eval \$(minikube docker-env)
