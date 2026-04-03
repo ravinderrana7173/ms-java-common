@@ -8,6 +8,7 @@ pipeline {
     environment {
         IMAGE_NAME = "ms-java-common"
         IMAGE_TAG = "${BUILD_NUMBER}"
+        VAULT_ADDR = "http://192.168.80.140:8200"
         KUBECONFIG = "/home/jenkins/.kube/config"   // ✅ important fix
     }
 
