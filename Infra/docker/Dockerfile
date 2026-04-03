@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y curl
 RUN mvn clean package -DskipTests
 
 # ---------------- RUNTIME STAGE ----------------
-FROM openjdk:17-jdk
+FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
