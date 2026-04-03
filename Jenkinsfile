@@ -8,6 +8,7 @@ pipeline {
     environment {
         IMAGE_NAME = "ms-java-common"
         IMAGE_TAG = "${BUILD_NUMBER}"
+        KUBECONFIG = "/home/jenkins/.kube/config"   // ✅ important fix
     }
 
     stages {
@@ -31,6 +32,8 @@ pipeline {
                     eval \$(minikube docker-env)
 
                     docker build \
+                    --build-arg VAULT_ADDR=${VAULT_ADDR} \
+                    --build-arg VAULT_TOKEN=${VAULT_TOKEN} \
                     -t ${IMAGE_NAME}:${IMAGE_TAG} \
                     -f Infra/docker/Dockerfile .
                     """
@@ -41,6 +44,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh """
+                echo "Checking cluster connection..."
+                kubectl get nodes   # ✅ validate connection
+
                 kubectl create namespace dev || true
 
                 kubectl apply -f Infra/kubernetes/ms-java-common-deployment.yml
