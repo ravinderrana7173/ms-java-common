@@ -26,21 +26,22 @@ pipeline {
         }
 
         stage('Docker Build') {
-            steps {
-                withCredentials([string(credentialsId: 'vault-token', variable: 'VAULT_TOKEN')])
-                script {
-                    sh """
-                    eval \$(minikube docker-env)
+    steps {
+        script {
+            withCredentials([string(credentialsId: 'vault-token', variable: 'VAULT_TOKEN')]) {
+                sh """
+                eval \$(minikube docker-env)
 
-                    docker build \
-                    --build-arg VAULT_ADDR=${VAULT_ADDR} \
-                    --build-arg VAULT_TOKEN=${VAULT_TOKEN} \
-                    -t ${IMAGE_NAME}:${IMAGE_TAG} \
-                    -f Infra/docker/Dockerfile .
-                    """
-                }
+                docker build \
+                --build-arg VAULT_ADDR=${VAULT_ADDR} \
+                --build-arg VAULT_TOKEN=${VAULT_TOKEN} \
+                -t ${IMAGE_NAME}:${IMAGE_TAG} \
+                -f Infra/docker/Dockerfile .
+                """
             }
         }
+    }
+}
 
         stage('Deploy to Kubernetes') {
             steps {
