@@ -28,7 +28,6 @@ data:
         hosts: ["ELKHOST"]
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,24 +35,20 @@ metadata:
   namespace: dev
   labels:
     app: ms-java-common
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: ms-java-common
-
   template:
     metadata:
       labels:
         app: ms-java-common
-
     spec:
       containers:
         - name: ms-java-common
           image: ms-java-common:local
-          imagePullPolicy: Never
-
+          imagePullPolicy: IfNotPresent
           env:
             - name: VAULT_ADDR
               value: "http://192.168.80.140:8200"
@@ -62,10 +57,15 @@ spec:
                 secretKeyRef:
                   name: vault-secret
                   key: token
-
           ports:
             - containerPort: 8100
-
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: 8100
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 20
           volumeMounts:
             - name: filebeat-logs
               mountPath: /var/log
@@ -82,16 +82,17 @@ spec:
       volumes:
         - name: filebeat-logs
           emptyDir: {}
-
         - name: filebeat-config
           configMap:
             name: filebeat-sidecar-ms-java-common
+            items:
+              - key: filebeat.yml
+                path: filebeat.yml
 
       imagePullSecrets:
         - name: my-secret-docker-pass
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -99,15 +100,12 @@ metadata:
   namespace: dev
   labels:
     app: ms-java-common
-
 spec:
   type: ClusterIP
   selector:
     app: ms-java-common
-
   ports:
     - name: http
       port: 8100
       targetPort: 8100
-
   sessionAffinity: ClientIP
